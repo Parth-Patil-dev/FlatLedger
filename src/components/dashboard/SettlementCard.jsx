@@ -1,3 +1,4 @@
+import Card from "../common/Card";
 function SettlementCard({ expenseList }) {
 
   const balances = {};
@@ -5,7 +6,14 @@ function SettlementCard({ expenseList }) {
 
   expenseList.forEach((expense) => {
 
-    const people = expense.splitBetween || [];
+   const people = expense.splitBetween?.includes(expense.paidBy)
+?
+expense.splitBetween
+:
+[
+ expense.paidBy,
+ ...(expense.splitBetween || [])
+];
 
     if (people.length === 0) return;
 
@@ -102,7 +110,7 @@ function SettlementCard({ expenseList }) {
 
   return (
 
-    <div className="bg-white rounded-xl shadow-md p-5 mt-6">
+    <Card>
 
 
       <h2 className="text-xl font-bold mb-4">
@@ -138,7 +146,7 @@ function SettlementCard({ expenseList }) {
 
 
             <span className="text-red-500">
-              ₹{Math.round(item.amount)}
+              ₹{item.amount.toFixed(2)}
             </span>
 
 
@@ -149,7 +157,7 @@ function SettlementCard({ expenseList }) {
       }
 
 
-    </div>
+    </Card>
 
   );
 

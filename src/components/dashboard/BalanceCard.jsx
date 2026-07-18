@@ -1,3 +1,4 @@
+import Card from "../common/Card";
 function BalanceCard({ expenseList }) {
 
   const balances = {};
@@ -32,7 +33,7 @@ function BalanceCard({ expenseList }) {
 
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-5 mt-6">
+    <card>
 
       <h2 className="text-xl font-bold mb-4">
         Balances
@@ -71,7 +72,7 @@ function BalanceCard({ expenseList }) {
         ))
       }
 
-    </div>
+    </card>
   );
 }
 

@@ -1,12 +1,13 @@
-function SummaryCard({ title, value, color = "text-emerald-600" }) {
+import Card from "../common/Card";
+function SummaryCard({ title, value }) {
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 w-72">
-      <p className="text-gray-500">{title}</p>
+    <Card>
+      <p className="text-gray-500 text-sm">{title}</p>
 
-      <h1 className={`text-3xl font-bold mt-2 ${color}`}>
+      <h2 className="text-3xl font-bold mt-2">
         {value}
-      </h1>
-    </div>
+      </h2>
+    </Card>
   );
 }
 

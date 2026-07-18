@@ -1,3 +1,5 @@
+import DashboardSummary from "../components/dashboard/DashboardSummary";
+import DashboardHeader from "../components/dashboard/DashboardHeader";
 import { useState } from "react";
 import BalanceCard from "../components/dashboard/BalanceCard";
 import { useExpense } from "../context/ExpenseContext";
@@ -8,11 +10,14 @@ import ExpensePieChart from "../components/dashboard/ExpensePieChart";
 import SettlementCard from "../components/dashboard/SettlementCard";
 import ExpenseCard from "../components/expenses/ExpenseCard";
 import { roommates } from "../data/dummyData";
-import AddExpense from "../components/expenses/AddExpense";
+import Modal from "../components/common/Modal";
+import ExpenseForm from "../components/expenses/ExpenseForm";
 
 function Dashboard() {
     const [editingExpense, setEditingExpense] = useState(null);
     const [showAddExpense, setShowAddExpense] = useState(false);
+    
+    
     const {
   expenseList,
   addExpense,
@@ -23,6 +28,21 @@ const totalExpenses = expenseList.reduce(
   (sum, expense) => sum + expense.amount,
   0
 );
+const roommateTotals = roommates.map((roommate) => {
+
+  const totalPaid = expenseList
+    .filter((expense) => expense.paidBy === roommate.name)
+    .reduce((sum, expense) => sum + expense.amount, 0);
+
+  return {
+
+    ...roommate,
+
+    totalPaid,
+
+  };
+
+});
 const totalTransactions = expenseList.length;
     const highestExpense =
   expenseList.length > 0
@@ -48,58 +68,46 @@ const totalTransactions = expenseList.length;
 }
   return (
   <MainLayout>
-      <h2 className="text-4xl font-bold">
-        Good Afternoon 👋
-      </h2>
-
-      <p className="text-gray-500 mt-2">
-        Welcome back to FlatLedger
-      </p>
-      <button
-  onClick={() => setShowAddExpense(true)}
-  className="mt-5 w-full sm:w-auto bg-blue-600 text-white px-5 py-3 rounded-lg hover:bg-blue-700"
->
-  + Add Expense
-  
-</button>
+    <DashboardHeader
+  onAddExpense={() => setShowAddExpense(true)}
+/>
 
       <br />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
-        <BalanceCard 
-  expenseList={expenseList}
+      <Modal
+  open={showAddExpense}
+  title={
+    editingExpense
+      ? "Edit Expense"
+      : "Add Expense"
+  }
+  onClose={() => {
+    setShowAddExpense(false);
+    setEditingExpense(null);
+  }}
+>
+  <ExpenseForm
+  onAddExpense={
+    editingExpense
+      ? editExpense
+      : addExpense
+  }
+  editingExpense={editingExpense}
+  closeModal={() => {
+    setShowAddExpense(false);
+    setEditingExpense(null);
+  }}
 />
-<SettlementCard
- expenseList={expenseList}
-/>
-  <SummaryCard
-    title="Total Expenses"
-    value={`₹${totalExpenses}`}
-  />
-  
-
-  <SummaryCard
-  title="Highest Expense"
-  value={`₹${highestExpense}`}
-  color="text-red-500"
-/>
-
-<SummaryCard
-  title="Average Expense"
-  value={`₹${averageExpense}`}
-  color="text-green-600"
-/>
-
-  <SummaryCard
-  title="Transactions"
-  value={totalTransactions}
-    color="text-purple-600"
-  />
-  
-</div>
-
+</Modal>
 
      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+
+      <DashboardSummary
+  expenseList={expenseList}
+  totalExpenses={totalExpenses}
+  highestExpense={highestExpense}
+  averageExpense={averageExpense}
+  totalTransactions={totalTransactions}
+/>
 
   <ExpensePieChart
     expenseList={expenseList}
@@ -125,15 +133,15 @@ const totalTransactions = expenseList.length;
 
     <div className="space-y-4">
 
-      {roommates.map((person) => (
+      {roommateTotals.map((person) => (
 
-        <PersonCard
-          key={person.id}
-          name={person.name}
-          paid={person.paid}
-        />
+<PersonCard
+  key={person.name}
+  roommate={person}
+  totalPaid={person.totalPaid}
+/>
 
-      ))}
+))}
 
     </div>
 
@@ -147,54 +155,13 @@ const totalTransactions = expenseList.length;
 
       {expenseList.map((expense) => (
   <ExpenseCard
-  key={expense.id}
-  id={expense.id}
-  title={expense.title}
-  category={expense.category}
-  amount={expense.amount}
-  paidBy={expense.paidBy}
-  date={expense.date}
-  onDelete={deleteExpense}
-  onEdit={handleEdit}
-/>
+    key={expense.id}
+    expense={expense}
+    roommates={roommates}
+    onDelete={deleteExpense}
+    onEdit={handleEdit}
+  />
 ))}
-      {showAddExpense && (
-  <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-
-    <div className="bg-white rounded-xl p-6 w-[400px] shadow-xl">
-
-      <div className="flex justify-between items-center mb-5">
-
-        <h2 className="text-xl font-bold">
-          Add Expense
-        </h2>
-
-        <button
-          onClick={() => setShowAddExpense(false)}
-          className="text-gray-500 hover:text-black"
-        >
-          ✕
-        </button>
-
-      </div>
-
-      <AddExpense 
-  onAddExpense={
-    editingExpense 
-    ? editExpense 
-    : addExpense
-  }
-  editingExpense={editingExpense}
-  closeModal={() => {
-    setShowAddExpense(false);
-    setEditingExpense(null);
-  }}
-/>
-
-    </div>
-
-  </div>
-)}
     </MainLayout>
 );
 }

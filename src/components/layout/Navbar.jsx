@@ -1,55 +1,92 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function Navbar() {
+  const navItem =
+    "px-3 py-2 rounded-lg transition-colors duration-200";
 
   return (
-    <nav className="bg-white shadow-md px-8 py-5 flex justify-between items-center transition-colors duration-300">
+    <nav className="bg-white shadow-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-      <h1 className="text-3xl font-bold text-emerald-600">
-        🏠 FlatLedger
-      </h1>
+        <h1 className="text-3xl font-bold text-emerald-600">
+          🏠 FlatLedger
+        </h1>
 
-      <div className="flex gap-8 text-lg">
+        <div className="flex gap-3">
 
-        <Link
-          to="/"
-          className="hover:text-emerald-600"
-        >
-          Dashboard
-        </Link>
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              `${navItem} ${
+                isActive
+                  ? "bg-emerald-600 text-white"
+                  : "hover:bg-emerald-100"
+              }`
+            }
+          >
+            Dashboard
+          </NavLink>
 
-        <Link
-          to="/expenses"
-          className="hover:text-emerald-600"
-        >
-          Expenses
-        </Link>
+          <NavLink
+            to="/expenses"
+            className={({ isActive }) =>
+              `${navItem} ${
+                isActive
+                  ? "bg-emerald-600 text-white"
+                  : "hover:bg-emerald-100"
+              }`
+            }
+          >
+            Expenses
+          </NavLink>
 
-        <Link
-          to="/"
-          className="hover:text-emerald-600"
-        >
-          Analytics
-        </Link>
+          <NavLink
+            to="/wallet"
+            className={({ isActive }) =>
+              `${navItem} ${
+                isActive
+                  ? "bg-emerald-600 text-white"
+                  : "hover:bg-emerald-100"
+              }`
+            }
+          >
+            Wallet
+          </NavLink>
 
-        <Link
-          to="/settings"
-          className="hover:text-emerald-600"
-        >
-          Settings
-        </Link>
+          <NavLink
+            to="/analytics"
+            className={({ isActive }) =>
+              `${navItem} ${
+                isActive
+                  ? "bg-emerald-600 text-white"
+                  : "hover:bg-emerald-100"
+              }`
+            }
+          >
+            Analytics
+          </NavLink>
 
-      </div>
+          <NavLink
+            to="/settings"
+            className={({ isActive }) =>
+              `${navItem} ${
+                isActive
+                  ? "bg-emerald-600 text-white"
+                  : "hover:bg-emerald-100"
+              }`
+            }
+          >
+            Settings
+          </NavLink>
 
-      <div className="flex items-center gap-5">
+        </div>
 
-
-        <div className="font-semibold text-lg">
+        <div className="font-semibold text-slate-700">
           👤 Parth
         </div>
 
       </div>
-
     </nav>
   );
 }
